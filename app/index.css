@@ -6,8 +6,24 @@ body {
 .SongName {
   color: white;
   font-family: Arial
-
  }
+
+.spantime {
+  color: white;
+  font-weight : bold;
+}
+
+.search-box{
+  padding-top: 40px;
+  padding-left: 40px;
+
+}
+
+.title {
+  font-family: Arial;
+  font-weight : bold;
+  color: gold;
+}
 
 /*.progress progress[value] {
   Reset the default appearance
@@ -34,6 +50,7 @@ body {
 .player{
   text-align: center;
   margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 .player div{
@@ -52,6 +69,7 @@ body {
   border-radius: 100%;
   font-size: 15px;
   outline: none;
+  margin-right: 3px;
 }
 
 .player .player__backward button{

@@ -7,17 +7,15 @@ class ProgressBar extends React.Component {
   }
 
   render () {
+    const position = this.props.formatMilliseconds(this.props.position);
+    const duration = this.props.formatMilliseconds(this.props.duration);
 
     return (
         <div>
-        <progress className = "progress"
+        <span className="spantime">{position}</span>
+        <progress className="progress"
         value={this.props.position} max={this.props.duration}></progress>
-
-
-        <p>{this.props.position}</p>
-        <p>{this.props.duration}</p>
-        <p>{this.props.position1}</p>
-        <p>{this.props.duration1}</p>
+        <span className="spantime">{duration}</span>
         </div>
   )
 }
@@ -26,3 +24,6 @@ class ProgressBar extends React.Component {
 
 
 module.exports = ProgressBar
+
+/*The progress className="progress" does some formatting to the progress bar,
+with no class Name reverts to the blue original formatting*/

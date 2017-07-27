@@ -7,9 +7,9 @@ class PlayList extends React.Component {
 
     return (
       <div>
-        <p>Current Playlist:</p>
+        <p className="SongName">Current Playlist:</p>
         <div>
-        {this.props.songs.map(e => (
+        {this.props.playlist.map(e => (
           <img
              className="img-thumbnail"
              height="50"
@@ -17,7 +17,7 @@ class PlayList extends React.Component {
              onClick={()=>(this.props.onSongChange(e))}
              src={e.artwork_url ?
                e.artwork_url :
-               '../dist/girl-smiley-face.png'}
+               '../dist/blue.jpg'}
              />
           ))}
         </div>

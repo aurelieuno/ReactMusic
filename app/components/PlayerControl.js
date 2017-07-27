@@ -17,10 +17,11 @@ class PlayerControl extends React.Component {
     });
 
     return (
-      <div>
         <div className="player">
+        <p className = "SongName">Song is {this.props.state.currentSong.title}</p>
           <div className="player__backward">
             <button onClick={this.props.onPrevious}><i className="fa fa-backward"></i></button>
+            <button onClick={this.props.onBackward}><i className="fa fa-fast-backward"></i></button>
           </div>
           <div className="player__main">
             <button onClick={this.props.ontogglePlay}><i className={playPauseClass}></i></button>
@@ -28,12 +29,10 @@ class PlayerControl extends React.Component {
             <button onClick={this.props.onRandom}><i className="fa fa-random"></i></button>
           </div>
           <div className="player__forward">
+            <button onClick={this.props.onForward}><i className="fa fa-fast-forward"></i></button>
             <button onClick={this.props.onNext}><i className="fa fa-forward"></i></button>
           </div>
-            <p className = "SongName">Song is {this.props.state.currentSong.title}</p>
           </div>
-        </div>
-
     )
   }
 }

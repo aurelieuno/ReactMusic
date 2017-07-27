@@ -1,17 +1,20 @@
 import React from 'react';
 import Sound from 'react-sound';
-import songs from './songs2.json'
 import PlayerControl from './PlayerControl'
 import PlayList from './PlayList'
 import ProgressBar from './ProgressBar'
-
+import SearchBar from './SearchBar'
+import {id, fetchAPI} from '../utils/api.js'
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            client_id: '2f98992c40b8edf17423d93bda2e04ab',
-            currentSong : songs[0],
+            client_id: id,
+            data:"",
+            playlist :[],
+            value:"",
+            currentSong : "",
             playStatus : Sound.status.PLAYING,
             volume: 50,
             position:0,
@@ -20,84 +23,129 @@ class App extends React.Component {
     }
 
     onPrevious () {
-        var index = songs.indexOf(this.state.currentSong);
+        var index = this.state.playlist.indexOf(this.state.currentSong);
         this.setState({
-            currentSong : index ? songs[index-1] : songs[songs.length-1]
+            currentSong : index ? this.state.playlist[index-1] : this.state.playlist[this.state.playlist.length-1]
         })
     }
 
     onNext () {
-        var index = songs.indexOf(this.state.currentSong);
+        var index = this.state.playlist.indexOf(this.state.currentSong);
         console.log(index)
         this.setState({
-            currentSong : index === songs.length-1 ? songs[0] : songs[index+1]
+            currentSong : index === this.state.playlist.length-1 ? this.state.playlist[0] : this.state.playlist[index+1]
         })
         console.log(this.state.currentSong)
     }
 
     onSongChange (song) {
-        var index = songs.indexOf(song);
+        var index = this.state.playlist.indexOf(song);
         this.setState({
-            currentSong : songs[index]
+            currentSong : this.state.playlist[index]
         })
     }
 
-    ontogglePlay(){
+    ontogglePlay() {
         this.setState(prevState=> ({
             playStatus : prevState.playStatus === Sound.status.PLAYING ? Sound.status.PAUSED : Sound.status.PLAYING
         }))
     }
 
-    atArtwork(url){
-        return url !== null ? url.replace(/large/, 't250x250') : '../dist/girl-smiley-face.png'
-        //return url.replace(/large/, 't250x250')
-    }
+    onForward() {
+        this.setState((prevState) => ({
+                position : prevState.position+30000
+                 }))}
 
-    forward(){
 
-  }
-
-    backward(){
-
-  }
+    onBackward() {
+        this.setState((prevState) => ({
+                position : prevState.position-20000
+                 }))}
 
     formatMilliseconds(milliseconds) {
        var minutes = Math.floor(milliseconds / 60000);
        milliseconds = milliseconds % 60000;
        var seconds = Math.floor(milliseconds / 1000);
-       milliseconds = Math.floor(milliseconds % 1000);
-
        return (minutes < 10 ? '0' : '') + minutes + ':' +
-          (seconds < 10 ? '0' : '') + seconds + ':' +
-          (milliseconds < 100 ? '0' : '') + milliseconds;
+          (seconds < 10 ? '0' : '') + seconds
     }
 
+    handleChange(event){
+      this.setState({value:event.target.value})
+    }
 
+    handleSubmit(event){
+       event.preventDefault();
 
+      fetchAPI(this.state.value)
+      .then(res => {
+        console.log(res)
+        this.setState({
+          data: res,
+        })
+    })
+      .catch(error => console.log(error));
+  }
+
+    atArtwork(url) {
+    return url ? url.replace(/large/, 't300x300') : '../dist/blue.jpg'
+  }
+
+    addToList(song) {
+      console.log(song)
+      this.setState({playlist:this.state.playlist.concat([song])})
+    }
+/*    this.setState((prevState) => ({
+            playlist : prevState.playlist.concat([song])
+             }))}*/
 
 render() {
     const volume = this.state.volume;
 
 
-    const niceStyle = {
-      width: '250px',
-      height: '180px',
+    const playerStyle = {
+      width: '300px',
+      height: '200px',
       backgroundImage: `linear-gradient(
       rgba(0, 0, 0, 0.6),
       rgba(0, 0, 0, 0.6)
     ),   url(${this.atArtwork(this.state.currentSong.artwork_url)})`
     }
 
+    const playlistStyle = {
+      width: '600px',
+      height: '200px',
+      backgroundImage: `linear-gradient(
+      rgba(0, 0, 0, 0.7),
+      rgba(0, 0, 0, 0.7)
+    )`
+    }
+
   return (
     <div>
+
+    <SearchBar
+    state={this.state}
+    handleChange={this.handleChange.bind(this)}
+    handleSubmit={this.handleSubmit.bind(this)}
+    addToList = {this.addToList.bind(this)}/>
+
+    {this.state.playlist.length> 0  &&
+    <div className="playlist" style = {playlistStyle}>
+
     <PlayList
-    songs = {songs}
-    onSongChange= {this.onSongChange.bind(this)}
-    />
-    <div className = "player" style = {niceStyle}>
+    playlist = {this.state.playlist}
+    onSongChange= {this.onSongChange.bind(this)}/>
+
+    </div>
+  }
+
+
+    {this.state.currentSong &&
+    <div className = "player" style = {playerStyle}>
+
     <PlayerControl
     state = {this.state}
-    songs = {songs}
     onPlay={() => this.setState({playStatus: Sound.status.PLAYING})}
     ontogglePlay={this.ontogglePlay.bind(this)}
     onPause={() => this.setState({playStatus: Sound.status.PAUSED})}
@@ -105,6 +153,8 @@ render() {
     onStop={() => this.setState({playStatus: Sound.status.STOPPED})}
     onNext= {this.onNext.bind(this)}
     onPrevious={this.onPrevious.bind(this)}
+    onForward={this.onForward.bind(this)}
+    onBackward={this.onBackward.bind(this)}
     onVolumeUp = {() => this.setState((prevState) => ({
         volume : prevState.volume+1
          }))}
@@ -112,6 +162,7 @@ render() {
         volume : prevState.volume-1
          }))}
     />
+
     <Sound
       url={`${this.state.currentSong.stream_url}?client_id=${this.state.client_id}`}
       playStatus={this.state.playStatus}
@@ -121,15 +172,16 @@ render() {
       onPlaying={({position,duration}) => this.setState({ position })}
       onFinishedPlaying={this.onNext.bind(this)} />
 
-    <ProgressBar
-      duration={this.formatMilliseconds.bind(this,{this.state.currentSong.duration})}
-      position = {this.formatMilliseconds.bind(this,{this.state.position})}
-      duration1={this.state.currentSong.duration}
-      position1 = {this,this.state.position}
+      <ProgressBar
+      formatMilliseconds={this.formatMilliseconds.bind(this)}
+      duration={this.state.currentSong.duration}
+      position = {this.state.position}/>
 
-      />
       </div>
+    }
+
       </div>
+
   );
 }
 }
