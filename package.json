@@ -1,13 +1,13 @@
 {
   "name": "sound",
   "version": "1.0.0",
-  "description": "Project for React Training's fundamental course.",
+  "description": "Playlist",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open"
   },
-  "author": "Tyler McGinnis",
-  "license": "MIT",
+  "author": "Lili Lbc",
+  "license": "",
   "babel": {
     "presets": [
       "env",

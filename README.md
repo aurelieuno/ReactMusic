@@ -1,6 +1,10 @@
 # Project
 
-- REACT project w webpack and AppleAPI getting a list of movies
+- REACT project with SoundCloud API and playlist of music
+
+## Usage
+
+> npm run start
 
 ## Requirements
 
@@ -13,4 +17,4 @@
     -"react-dom": "^16.0.0-alpha.5"
     -"webpack": "^2.3.1",
 
-"# ReactMusic" 
+
